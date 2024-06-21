@@ -9,11 +9,14 @@ class Connector:
             print("Conexión exitosa a la base de datos")
         except sqlite3.Error as e:
             print(f"Error al conectar a la base de datos: {e}")
+            self.conn = None
+            self.cursor = None
 
     def cerrar_connect(self):
-        try:
-            self.conn.commit()
-            self.conn.close()
-            print("Conexión cerrada correctamente")
-        except sqlite3.Error as e:
-            print(f"Error al cerrar la conexión a la base de datos: {e}")
+        if self.conn:
+            try:
+                self.conn.commit()
+                self.conn.close()
+                print("Conexión cerrada correctamente")
+            except sqlite3.Error as e:
+                print(f"Error al cerrar la conexión a la base de datos: {e}")
