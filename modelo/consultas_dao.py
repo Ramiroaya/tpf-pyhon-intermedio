@@ -1,4 +1,5 @@
-from conexiondb import Connector
+from .conexiondb import Connector
+import sqlite3
 
 
 def crear_tabla():
@@ -45,9 +46,26 @@ class Peliculas:
     def __str__(self):
         return f'Pelicula: {self.titulo}, Descripcion: {self.descripcion}, Duracion: {self.duracion}, Genero: {self.genero}'
 
+
+def listar_generos():
+    conn = Connector()
+    listar_generos = []
+    sql = """
+        SELECT * FROM generos
+        """
+    try:
+        conn.cursor.execute(sql)
+        listar_generos = conn.cursor.fetchall()
+        conn.cerrar_connect()
+
+    except sqlite3.Error as e:
+        print(f"Error al listar los géneros: {e}")
+    return listar_generos
+
+
 def guardar_pelicula(pelicula):
     conn = Connector()
-    sql = """
+    sql =f"""
         INSERT INTO peliculas (titulo, descripcion, duracion, genero_id)
         VALUES (?, ?, ?, ?)
     """
@@ -62,15 +80,36 @@ def listar_peliculas():
     conn = Connector()
     listar_peliculas = []
     sql = """
-        SELECT p.id_pelicula, p.titulo, p.descripcion, p.duracion, g.nombre as genero 
-        FROM peliculas as p 
+        SELECT * FROM peliculas as p 
         INNER JOIN generos as g ON p.genero_id = g.id_genero
     """
     try:
         conn.cursor.execute(sql)
         listar_peliculas = conn.cursor.fetchall()
         conn.cerrar_connect()
-        return listar_peliculas
     except sqlite3.Error as e:
         print(f"Error al listar las películas: {e}")
-        return []
+    return listar_peliculas
+
+
+def editar_pelicula(pelicula, id):
+    conn = Connector()
+
+    sql = f"""
+            UPDATE  peliculas
+            SET titulo = '{pelicula.titulo}', descripcion = '{pelicula.descripcion}', duracion = '{pelicula.duracion}', genero = {pelicula.genero_id}
+            WHERE id_pelicula = {id};
+            """
+
+    conn.cursor.execute(sql)
+    conn.cerrar_connect()
+
+
+def borrar_pelicula(id):
+    conn = Connector()
+    sql = f"""
+        DELETE FROM peliculas
+        WHERE id_pelicula = {id};
+        """
+    conn.cursor.execute(sql)
+    conn.cerrar_connect()
