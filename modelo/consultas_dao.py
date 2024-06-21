@@ -36,15 +36,15 @@ def crear_tabla():
         print(f"Error al crear las tablas: {e}")
 
 class Peliculas:
-    def __init__(self, titulo, descripcion, duracion, genero):
+    def __init__(self, titulo, descripcion, duracion, genero_id):
         self.id_pelicula = None
         self.titulo = titulo
         self.descripcion = descripcion
         self.duracion = duracion
-        self.genero = genero
+        self.genero_id = genero_id
 
     def __str__(self):
-        return f'Pelicula: {self.titulo}, Descripcion: {self.descripcion}, Duracion: {self.duracion}, Genero: {self.genero}'
+        return f'Pelicula: {self.titulo}, Descripcion: {self.descripcion}, Duracion: {self.duracion}, Genero: {self.genero_id}'
 
 
 def listar_generos():
@@ -70,7 +70,7 @@ def guardar_pelicula(pelicula):
         VALUES (?, ?, ?, ?)
     """
     try:
-        conn.cursor.execute(sql, (pelicula.titulo, pelicula.descripcion, pelicula.duracion, pelicula.genero))
+        conn.cursor.execute(sql, (pelicula.titulo, pelicula.descripcion, pelicula.duracion, pelicula.genero_id))
         conn.cerrar_connect()
         print("Película guardada exitosamente")
     except sqlite3.Error as e:
@@ -82,7 +82,7 @@ def listar_peliculas():
     sql = """
         SELECT * FROM peliculas as p 
         INNER JOIN generos as g ON p.genero_id = g.id_genero
-    """
+        """
     try:
         conn.cursor.execute(sql)
         listar_peliculas = conn.cursor.fetchall()
@@ -97,7 +97,7 @@ def editar_pelicula(pelicula, id):
 
     sql = f"""
             UPDATE  peliculas
-            SET titulo = '{pelicula.titulo}', descripcion = '{pelicula.descripcion}', duracion = '{pelicula.duracion}', genero = {pelicula.genero_id}
+            SET titulo = '{pelicula.titulo}', descripcion = '{pelicula.descripcion}', duracion = '{pelicula.duracion}', genero_id = {pelicula.genero_id}
             WHERE id_pelicula = {id};
             """
 

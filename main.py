@@ -6,7 +6,7 @@ def main():
     ventana.title('Listado Peliculas')
     #ventana.iconbitmap('img/videocamara.ico')
     ventana.resizable(0,0)
-    centrar_ventana(ventana, 800, 600)
+    centrar_ventana(ventana, 1000, 700)
     barrita_menu(ventana)
     app = Frame(root = ventana)
 

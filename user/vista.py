@@ -17,7 +17,7 @@ def centrar_ventana(root, ancho, alto):
 
 def barrita_menu(root):
     barra = tk.Menu(root)
-    root.config(menu = barra, width = 800, height = 600)
+    root.config(menu = barra, width = 1000, height = 700)
     menu_inicio = tk.Menu(barra, tearoff=0)
 
     #Niveles#
@@ -56,13 +56,13 @@ class Frame(tk.Frame):
             self.titulo_peli_e = self.tabla.item(self.tabla.selection())['values'][0]
             self.descripcion_peli_e = self.tabla.item(self.tabla.selection())['values'][1]
             self.duracion_peli_e = self.tabla.item(self.tabla.selection())['values'][2]
-            self.genero_peli_e = self.tabla.item(self.tabla.selection())['values'][3]
+            self.genero_id_peli_e = self.tabla.item(self.tabla.selection())['values'][3]
 
             self.habilitar_campos()
             self.titulo.set(self.titulo_peli_e)
             self.descripcion.set(self.descripcion_peli_e)
             self.duracion.set(self.duracion_peli_e)
-            self.entry_genero.current(self.generos.index(self.genero_peli_e))
+            self.entry_genero.current(self.generos.index(self.genero_id_peli_e))
 
         except:
             pass
@@ -71,14 +71,16 @@ class Frame(tk.Frame):
            
     def eliminar_registro(self):
         try:
-            self.id_peli = self.tabla.ietm(self.tabla.selection())['text']
-            
+            self.id_peli = self.tabla.item(self.tabla.selection())['text']
+            self.titulo_peli = self.tabla.item(self.tabla.selection())['values'][0]
            
-            respuesta = messagebox.askyesno("Confirmar Borrado", f"¿Estás seguro de que quieres borrar la película '{titulo_peli}'?")
+            respuesta = messagebox.askyesno("Confirmar Borrado", f"¿Estás seguro de que quieres borrar la película '{self.titulo_peli}'?")
             if respuesta:
                 borrar_pelicula(int(self.id_peli))
                 self.mostrar_tabla()
                 self.id_peli = None
+        except IndexError:
+            messagebox.showerror("Error", "No se seleccionó ninguna película")
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo borrar la película: {e}")
 
@@ -165,7 +167,7 @@ class Frame(tk.Frame):
         self.btn_alta.config(state='disabled')
 
     def bloquear_campos(self):
-        self.entry.genero.current_(0)
+        self.entry_genero.current(0)
         self.entry_titulo.config(state='disabled')
         self.entry_descripcion.config(state='disabled')
         self.entry_genero.config(state='disabled')
@@ -188,7 +190,7 @@ class Frame(tk.Frame):
         if self.id_peli == None:
             guardar_pelicula(pelicula)
         else:
-            editar_pelicula(pelicula, int(self.id.peli))
+            editar_pelicula(pelicula, int(self.id_peli))
 
         self.mostrar_tabla()
         self.bloquear_campos()
@@ -197,7 +199,7 @@ class Frame(tk.Frame):
 
     def mostrar_tabla(self):
         self.lista_p = listar_peliculas()
-        print(listar_peliculas())
+        #print(listar_peliculas())
         self.lista_p.reverse() #Invierte el orden , asi nos muestra por pantalla a partir del 1.
         self.tabla = ttk.Treeview(self, columns=('Titulo', 'Descripcion', 'Duracion', 'Genero'))
         self.tabla.grid(row=5, column=0,columnspan=4,sticky='nse')
@@ -213,7 +215,7 @@ class Frame(tk.Frame):
         self.tabla.heading('#4',text='Género')
 
         for p in self.lista_p:
-            self.tabla.insert('',0,text=p[0], value = (p[1],p[2],p[3]))
+            self.tabla.insert('',0,text=p[0], values = (p[1],p[2],p[3],p[4]))
 
         #Creamos los botones de Editar y Borrar
         self.btn_editar = tk.Button(self, text='Editar',command=self.editar_registro)
