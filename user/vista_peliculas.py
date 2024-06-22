@@ -4,11 +4,8 @@ from tkinter import messagebox
 from modelo.consultas_dao import Peliculas, listar_generos, listar_peliculas, guardar_pelicula, editar_pelicula, borrar_pelicula
 
 def centrar_ventana(root, ancho, alto):
-    # Obtener las dimensiones de la pantalla
     ancho_pantalla = root.winfo_screenwidth()
     alto_pantalla = root.winfo_screenheight()
-    
-    # Calcular la posición del centro
     x = (ancho_pantalla // 2) - (ancho // 2)
     y = (alto_pantalla // 2) - (alto // 2)
     
@@ -36,18 +33,16 @@ def barrita_menu(root):
     menu_inicio.add_command(label='Salir', command =root.destroy)
 
 
-class Frame(tk.Frame):
+class Frame_peliculas(tk.Frame):
     def __init__(self, root = None):
         super().__init__(root,width=680,height=620)
         self.root = root
         self.pack(padx=20, pady=20)
-        self.id_peli = None
-        
+        self.id_peli = None        
         self.label_form()
         self.input_form()
         self.botones_principales()
         self.mostrar_tabla()
-
         self.config(bg='grey')
 
     def editar_registro(self):
@@ -109,17 +104,17 @@ class Frame(tk.Frame):
     def input_form(self):
         self.titulo = tk.StringVar()
         self.entry_titulo = tk.Entry(self,textvariable=self.titulo)
-        self.entry_titulo.config(width=50, state='disabled')
+        self.entry_titulo.config(width=70, state='disabled')
         self.entry_titulo.grid(row= 0, column=1,padx=10,pady=10, columnspan='2')
 
         self.descripcion = tk.StringVar()
         self.entry_descripcion = tk.Entry(self,textvariable=self.descripcion)
-        self.entry_descripcion.config(width=50, state='disabled')
+        self.entry_descripcion.config(width=70, state='disabled')
         self.entry_descripcion.grid(row= 1, column=1,padx=10,pady=10, columnspan='2')
 
         self.duracion = tk.StringVar()
         self.entry_duracion = tk.Entry(self,textvariable=self.duracion)
-        self.entry_duracion.config(width=50, state='disabled')
+        self.entry_duracion.config(width=70, state='disabled')
         self.entry_duracion.grid(row= 2, column=1,padx=10,pady=10, columnspan='2')
 
 
@@ -157,11 +152,20 @@ class Frame(tk.Frame):
         bg='#A90A0A',cursor='hand2',activebackground='#F35B5B',activeforeground='#000000')
         self.btn_cance.grid(row= 4, column=2,padx=10,pady=10)
 
+        self.btn_volver = tk.Button(self, text='Volver al menú de Usuarios', command=self.volver_menu_usuarios)
+        self.btn_volver.config(width=20, font=('Arial', 12, 'bold'), fg='#FFFFFF',
+                               bg='#008000', cursor='hand2', activebackground='#70DB70', activeforeground='#000000')
+        self.btn_volver.grid(row=4, column=3, padx=10, pady=10)
+
+    
+
+
     def habilitar_campos(self):
         self.entry_titulo.config(state='normal')
         self.entry_descripcion.config(state='normal')
         self.entry_genero.config(state='normal')
         self.entry_duracion.config(state='normal')
+
         self.btn_modi.config(state='normal')
         self.btn_cance.config(state='normal')
         self.btn_alta.config(state='disabled')
@@ -172,8 +176,10 @@ class Frame(tk.Frame):
         self.entry_descripcion.config(state='disabled')
         self.entry_genero.config(state='disabled')
         self.entry_duracion.config(state='disabled')
+
         self.btn_modi.config(state='disabled')
         self.btn_cance.config(state='disabled')
+        
         self.titulo.set('')
         self.descripcion.set('')
         self.duracion.set('')
@@ -228,4 +234,6 @@ class Frame(tk.Frame):
         bg='#A90A0A',cursor='hand2',activebackground='#F35B5B',activeforeground='#000000')
         self.btn_borrar.grid(row= 6, column=2,padx=10,pady=10)
 
-   
+    def volver_menu_usuarios(self):
+        self.pack_forget()
+        self.root.mostrar_vista_usuarios()
