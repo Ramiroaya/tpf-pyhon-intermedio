@@ -80,10 +80,13 @@ def guardar_usuario(usuario):
     """
     try:
         conn.cursor.execute(sql, (usuario.nombre, usuario.apellido, usuario.email))
+        usuario_id = conn.cursor.lastrowid
         conn.cerrar_connect()
         print("Usuario guardado exitosamente")
+        return usuario_id
     except sqlite3.Error as e:
         print(f"Error al guardar el Usuario: {e}")
+        return None
 
 
 def editar_usuario(usuario, id):
@@ -190,3 +193,19 @@ def borrar_pelicula(id):
         """
     conn.cursor.execute(sql)
     conn.cerrar_connect()
+
+
+
+def guardar_usuarios_peliculas(usuario_id, peliculas_ids):
+    conn = Connector()
+    try:
+        for pelicula_id in peliculas_ids:
+            sql = """
+                INSERT INTO usuarios_peliculas (usuario_id, pelicula_id)
+                VALUES (?, ?)
+            """
+            conn.cursor.execute(sql, (usuario_id, pelicula_id))
+        conn.cerrar_connect()
+        print("Películas del usuario guardadas exitosamente")
+    except sqlite3.Error as e:
+        print(f"Error al guardar las películas del usuario: {e}")

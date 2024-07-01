@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from modelo.consultas_dao import Usuarios, listar_usuarios, guardar_usuario, editar_usuario, borrar_usuario, listar_peliculas
+from modelo.consultas_dao import Usuarios, listar_usuarios, guardar_usuario, editar_usuario, borrar_usuario, listar_peliculas, guardar_usuarios_peliculas
 
 
 
@@ -154,13 +154,22 @@ class Frame_usuarios(tk.Frame):
         usuario = Usuarios(
             self.nombre.get(),
             self.apellido.get(),
-            self.email.get(),
-            self.entry_peliculas.current()
+            self.email.get()
         )
+
+
         if self.id_usuario == None:
-            guardar_usuario(usuario)
+            usuario_id = guardar_usuario(usuario)
         else:
             editar_usuario(usuario, int(self.id_usuario))
+            usuario_id = self.id_usuario
+
+        
+        # Guardar la relación usuario-películas
+        pelicula_vista_index = self.entry_peliculas.current()
+        if pelicula_vista_index > 0:  # Evitar "Seleccione una"
+            pelicula_vista_id = self.lista_peliculas[pelicula_vista_index - 1][0]
+            guardar_usuarios_peliculas(usuario_id, [pelicula_vista_id])
 
         self.mostrar_tabla()
         self.bloquear_campos()
@@ -185,7 +194,7 @@ class Frame_usuarios(tk.Frame):
         self.tabla.heading('#4',text='Peliculas Vistas')
 
         for u in self.lista_usuario:
-            self.tabla.insert('',0,text=u[0], values = (u[1],u[2],u[3],u[4]))
+            self.tabla.insert('',0,text=u[0], values=(u[1],u[2],u[3],u[4]))
 
         #Creamos los botones de Editar y Borrar
         self.btn_editar = tk.Button(self, text='Editar',command=self.editar_registro_usuario)
